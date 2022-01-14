@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      /* ------------------------------
+      App
+      ------------------------------ */
+      const App = () => {
+        //初期値は空の配列
+        const [items, setItems] = React.useState([]);
+        //inputタグの中身を取り出す
+        const [inputValue, setInputValue] = React.useState("");
+
+        /* ------------------------------
+        function
+        ------------------------------ */
+        //クリック時にitems配列に新しいitemを作る処理
+        const handleAddButtonClick = () => {
+          //作られるitemの定義（オブジェクト型）
+          const newItem = {
+            itemName: inputValue,
+            quantity: 1,
+            isSelected: false,
+          };
+          //items配列にpushされる（Array.prototype.concat（））
+          // const newItems = items.concat（newItem）;
+          const newItems = [...items, newItem];
+          //useStateのitemsに反映
+          setItems(newItems);
+          //入力値を空に
+          setInputValue("");
+        };
+
+        //アイテムの完了/未完了を切り替える
+        const toggleComplete = (index) => {
+          //itemsを展開した配列、newItemsを作る（配列のクローン）
+          const newItems = [...items];
+          //引数のindexから、該当するitemのisSelectedを切り替える
+          newItems[index].isSelected = !newItems[index].isSelected;
+          setItems(newItems);
+        };
+
+        //アイテムの個数を増減できる様にする
+        //増やす
+        const handleQuantityIncrease = (index) => {
+          //itemsを展開した配列、newItemsを作る
+          const newItems = [...items];
+          //quantityに+1する
+          newItems[index].quantity++;
+          setItems(newItems);
+        };
+
+        //減らす
+        const handleQuantityDecrease = (index) => {
+          //itemsを展開した配列、newItemsを作る
+          const newItems = [...items];
+          //quantityに-1する
+          newItems[index].quantity--;
+          setItems(newItems);
+        };
+
+        return (
+          <div className="app-background">
+            <div className="main-container">
+              <div className="add-item-box">
+                <input
+                  value={inputValue}
+                  onChange={(event) => setInputValue(event.target.value)}
+                  className="add-item-input"
+                  placeholder="Add an item..."
+                />
+                <div onClick={() => handleAddButtonClick()}>+</div>
+              </div>
+              <div className="item-list">
+                {items.map((item, index) => (
+                  <div className="item-container" key={index}>
+                    <div
+                      className="item-name"
+                      onClick={() => toggleComplete(index)}
+                    >
+                      {item.isSelected ? (
+                        <>
+                          <span>□</span>
+                          <span className="completed">{item.itemName}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>■</span>
+                          <span>{item.itemName}</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="quantity">
+                      <button>
+                        <span onClick={() => handleQuantityIncrease(index)}>
+                          ＜
+                        </span>
+                      </button>
+                      <span> {item.quantity} </span>
+                      <button>
+                        <span onClick={() => handleQuantityDecrease(index)}>
+                          ＞
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      /* ------------------------------
+      Board
+      ------------------------------ */
+
+      /* ------------------------------
+      Game
+      ------------------------------ */
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+    <!--
+      注：このページはReactを試すのに最適な方法ですが、本番には適していません。
+      ブラウザでBabelを使ってJSXをゆっくりとコンパイルし、Reactの大規模な開発ビルドを使用しています。
+
+      JSXを使った本番対応のセットアップについては、このセクションをお読みください。
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      大規模なプロジェクトでは、代わりにJSXを含む統合ツールチェーンを使用することができます。
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      JSXなしでReactを使用することもでき、その場合はBabelを削除することができます。
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>
